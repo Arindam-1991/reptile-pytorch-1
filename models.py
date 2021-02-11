@@ -12,28 +12,6 @@ def cosine_angle(a, b):
     return cos_theta
 
 
-# class ReptileModel(nn.Module):
-
-#     def __init__(self):
-#         nn.Module.__init__(self)
-
-#     def point_grad_to(self, target):
-#         '''
-#         Set .grad attribute of each parameter to be proportional
-#         to the difference between self and target
-#         '''
-#         for p, target_p in zip(self.parameters(), target.parameters()):
-#             if p.grad is None:
-#                 if self.is_cuda():
-#                     p.grad = Variable(torch.zeros(p.size())).cuda()
-#                 else:
-#                     p.grad = Variable(torch.zeros(p.size()))
-#             p.grad.data.zero_()  # not sure this is required
-#             p.grad.data.add_(p.data - target_p.data)
-
-#     def is_cuda(self):
-#         return next(self.parameters()).is_cuda
-    
 class ReptileModel(nn.Module):
 
     def __init__(self):
@@ -50,15 +28,37 @@ class ReptileModel(nn.Module):
                     p.grad = Variable(torch.zeros(p.size())).cuda()
                 else:
                     p.grad = Variable(torch.zeros(p.size()))
-#             p.grad.data.zero_()  # not sure this is required
-            co_eff = abs(cosine_angle(p.grad,target_p.grad))
-  
-            co_eff = torch.sigmoid(co_eff)
-            x = co_eff * (p.data - target_p.data)
-            p.grad.data.add_(x)
+            p.grad.data.zero_()  # not sure this is required
+            p.grad.data.add_(p.data - target_p.data)
 
     def is_cuda(self):
         return next(self.parameters()).is_cuda
+    
+# class ReptileModel(nn.Module):
+
+#     def __init__(self):
+#         nn.Module.__init__(self)
+
+#     def point_grad_to(self, target):
+#         '''
+#         Set .grad attribute of each parameter to be proportional
+#         to the difference between self and target
+#         '''
+#         for p, target_p in zip(self.parameters(), target.parameters()):
+#             if p.grad is None:
+#                 if self.is_cuda():
+#                     p.grad = Variable(torch.zeros(p.size())).cuda()
+#                 else:
+#                     p.grad = Variable(torch.zeros(p.size()))
+# #             p.grad.data.zero_()  # not sure this is required
+#             co_eff = abs(cosine_angle(p.grad,target_p.grad))
+  
+#             co_eff = torch.sigmoid(co_eff)
+#             x = co_eff * (p.data - target_p.data)
+#             p.grad.data.add_(x)
+
+#     def is_cuda(self):
+#         return next(self.parameters()).is_cuda
 
 
 class OmniglotModel(ReptileModel):
