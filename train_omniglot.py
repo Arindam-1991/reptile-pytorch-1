@@ -10,6 +10,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 import numpy as np
 # from tensorboardX import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 
 from models import OmniglotModel
 from omniglot import MetaOmniglotFolder, split_omniglot, ImageCache, transform_image, transform_label
@@ -92,7 +93,7 @@ else:
 
 
 # Create tensorboard logger
-# logger = SummaryWriter(run_dir)
+logger = SummaryWriter(run_dir)
 
 # Load data
 # Resize is done by the MetaDataset because the result can be easily cached
@@ -260,9 +261,9 @@ for meta_iteration in tqdm.trange(args.start_meta_iteration, args.meta_iteration
             print '\nMeta-{}'.format(mode)
             print 'average metaloss', np.mean(info[loss_].values())
             print 'average accuracy', np.mean(info[accuracy_].values())
-            # logger.add_scalar(loss_, meta_loss, meta_iteration)
-            # logger.add_scalar(accuracy_, meta_accuracy, meta_iteration)
-            # logger.add_scalar(meta_lr_, meta_lr, meta_iteration)
+            logger.add_scalar(loss_, meta_loss, meta_iteration)
+            logger.add_scalar(accuracy_, meta_accuracy, meta_iteration)
+            logger.add_scalar(meta_lr_, meta_lr, meta_iteration)
 
     if meta_iteration % args.check_every == 0 and not (args.checkpoint and meta_iteration == args.start_meta_iteration):
         # Make a checkpoint
